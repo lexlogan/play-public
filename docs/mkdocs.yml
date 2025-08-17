@@ -1,0 +1,13 @@
+# mkdocs.yml
+site_name: Minha Documentação Incrível
+theme:
+  name: material
+  language: pt
+
+nav:
+  - 'Início': 'README.md'
+  - 'Product Vision':
+    - 'Personas': '00-product-vision/personas.md'
+    - 'Value prop': '00-product-vision/value-prop.md'
+    - 'Vision': '00-product-vision/vision.md'
+  - 'Functional Spec': '01-functional-spec/functional-spec.md'
