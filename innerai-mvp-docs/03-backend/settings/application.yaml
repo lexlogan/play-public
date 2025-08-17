@@ -1,0 +1,35 @@
+server:
+  port: ${APP_PORT:8080}
+
+spring:
+  application:
+    name: innerai
+  datasource:
+    url: jdbc:postgresql://localhost:5432/${POSTGRES_DB:innerai}
+    username: ${POSTGRES_USER:innerai}
+    password: ${POSTGRES_PASSWORD:innerai}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+innerai:
+  security:
+    jwt:
+      issuer: innerai-local
+  limits:
+    rpm: 120
+    tpm: 200000
+  storage:
+    s3:
+      endpoint: http://localhost:9000
+      bucket: ${MINIO_BUCKET:innerai-artifacts}
+      accessKey: ${MINIO_ROOT_USER:admin}
+      secretKey: ${MINIO_ROOT_PASSWORD:adminadmin}
+      region: us-east-1
+  providers:
+    openai:
+      endpoint: https://api.openai.com
+    anthropic:
+      endpoint: https://api.anthropic.com
+    google:
+      endpoint: https://generativelanguage.googleapis.com

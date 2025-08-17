@@ -1,0 +1,102 @@
+openapi: 3.0.3
+info:
+  title: InnerAI Hub API
+  version: "0.1.0"
+servers:
+  - url: https://api.innerai.local
+paths:
+  /v1/projects:
+    post:
+      summary: Create project
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name: { type: string }
+                slug: { type: string }
+    get:
+      summary: List projects
+      security: [{ bearerAuth: [] }]
+  /v1/projects/{projectId}/tokens:
+    post:
+      summary: Issue API token
+      security: [{ bearerAuth: [] }]
+    get:
+      summary: List API tokens
+      security: [{ bearerAuth: [] }]
+  /v1/projects/{projectId}/providers:
+    post:
+      summary: Add provider credential
+      security: [{ bearerAuth: [] }]
+    get:
+      summary: List provider credentials
+      security: [{ bearerAuth: [] }]
+  /v1/projects/{projectId}/providers/{id}/test:
+    post:
+      summary: Test provider connectivity
+      security: [{ bearerAuth: [] }]
+  /v1/completions:
+    post:
+      summary: Create completion (text-only MVP)
+      security: [{ projectToken: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [projectId, prompt]
+              properties:
+                projectId: { type: string, format: uuid }
+                provider: { type: string, enum: [openai, anthropic, google, azure], description: "If omitted, use project default/fallback." }
+                model: { type: string, description: "e.g., gpt-4o-mini, claude-3-haiku, gemini-1.5-flash" }
+                prompt: { type: string }
+                max_tokens: { type: integer, default: 512 }
+                temperature: { type: number, default: 0.7 }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  requestId: { type: string }
+                  provider: { type: string }
+                  model: { type: string }
+                  output: { type: string }
+                  usage:
+                    type: object
+                    properties:
+                      input_tokens: { type: integer }
+                      output_tokens: { type: integer }
+  /v1/prompts:
+    post:
+      summary: Create prompt template
+      security: [{ bearerAuth: [] }]
+    get:
+      summary: List prompt templates
+      security: [{ bearerAuth: [] }]
+  /v1/usage/metrics:
+    get:
+      summary: Aggregated usage metrics by project/provider
+      security: [{ bearerAuth: [] }]
+  /v1/logs/export:
+    get:
+      summary: Export usage logs CSV
+      security: [{ bearerAuth: [] }]
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    projectToken:
+      type: http
+      scheme: bearer
+      bearerFormat: PROJECT-TOKEN
