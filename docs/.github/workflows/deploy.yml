@@ -1,0 +1,30 @@
+# .github/workflows/deploy.yml
+name: Deploy documentation to GitHub Pages
+
+on:
+  push:
+    branches:
+      - master  # ou 'master', dependendo da sua branch principal
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+
+      - name: Install dependencies
+        run: |
+          pip install mkdocs
+          pip install mkdocs-material # ou qualquer outro tema/plugin que você use
+
+      - name: Deploy
+        run: mkdocs gh-deploy --force
